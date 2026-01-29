@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Skills Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 960px;
+            background-color: #ffffff;
+            margin: 20px 0;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            color: #7f8c8d;
+        }
+        h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'Source Code Pro', monospace;
+            background-color: #eef2f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c0392b;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        pre code {
+            background-color: transparent;
+            color: #f8f8f2;
+            padding: 0;
+            font-size: 1em;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .highlight {
+            background-color: #d1ecf1;
+            border-left: 5px solid #007bff;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #0c5460;
+        }
+        .section-intro {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Claude Code Skills Guide</h1>
+            <p>December 31, 2025 | 8 min read</p>
+        </header>
+
+        <main>
+            <section>
+                <h2>What are Skills?</h2>
+                <p>Skills are instruction manuals that teach Claude HOW to do specific tasks. They're passive knowledge stored as markdown files that Claude reads when needed.</p>
+                <p>Think of Skills as recipes - Claude reads them and follows the instructions in your main conversation.</p>
+            </section>
+
+            <section>
+                <h2>Skills vs Sub-agents</h2>
+                <div class="highlight">
+                    <p>⚡ Quick Comparison: Skills vs Sub-Agents</p>
+                </div>
+
+                <h3>Skills</h3>
+                <ul>
+                    <li><strong>What they are:</strong> Instructions and knowledge</li>
+                    <li><strong>How they work:</strong> Claude reads and follows rules</li>
+                    <li><strong>Context:</strong> Uses the main conversation context</li>
+                    <li><strong>Invocation:</strong> Automatic (Claude decides when to use)</li>
+                    <li><strong>Complexity:</strong> Simple and lightweight</li>
+                    <li><strong>Best use case:</strong> Repeated patterns, small steps, UI updates</li>
+                </ul>
+
+                <h3>Sub-Agents</h3>
+                <ul>
+                    <li><strong>What they are:</strong> Specialized AI workers</li>
+                    <li><strong>How they work:</strong> Separate AI that performs tasks</li>
+                    <li><strong>Context:</strong> Has its own separate context window</li>
+                    <li><strong>Invocation:</strong> Automatic or explicitly called</li>
+                    <li><strong>Complexity:</strong> Advanced with full configuration</li>
+                    <li><strong>Best use case:</strong> Complete workflows, multi-step tasks</li>
+                </ul>
+                <p class="highlight">Memory tip: 🧩 Skills guide Claude 🤖 Sub-Agents do the work</p>
+
+                <h3>Real Example</h3>
+                <p><strong>Skill:</strong> "How to create a glassmorphism button"</p>
+                <ul>
+                    <li>Claude reads the instructions</li>
+                    <li>Applies them in your current chat</li>
+                    <li>Uses it as a reference</li>
+                </ul>
+                <p><strong>Sub-agent:</strong> "Complete website upgrader"</p>
+                <ul>
+                    <li>Takes over the entire task</li>
+                    <li>Uses multiple Skills</li>
+                    <li>Works separately and returns results</li>
+                </ul>
+
+                <h3>When to Use Each</h3>
+                <h4>Use Skills When:</h4>
+                <ul>
+                    <li>✅ Teaching a specific pattern or workflow</li>
+                    <li>✅ Providing templates or references</li>
+                    <li>✅ Sharing team conventions (commit messages, code style)</li>
+                    <li>✅ Reusable design components (buttons, navbars, footers)</li>
+                    <li>✅ Single, focused instructions</li>
+                </ul>
+                <h4>Use Sub-agents When:</h4>
+                <ul>
+                    <li>✅ Complete products or features</li>
+                    <li>✅ Complex multi-step workflows</li>
+                    <li>✅ Need separate context to keep main chat clean</li>
+                    <li>✅ Want to coordinate multiple Skills</li>
+                    <li>✅ Need specific tool restrictions</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Creating Skills</h2>
+                <h3>File Structure</h3>
+                <p>Skills are stored in:</p>
+                <ul>
+                    <li>Personal: <code>~/.claude/skills/skill-name/</code></li>
+                    <li>Project: <code>.claude/skills/skill-name/</code></li>
+                </ul>
+                <p>Each Skill needs a <code>SKILL.md</code> file:</p>
+                <pre><code>.claude/skills/
+└── modern-button/
+    └── SKILL.md</code></pre>
+
+                <h3>SKILL.md Format</h3>
+                <pre><code>---
+name: skill-name
+description: When to use this Skill and what it does
+---
+
+# Skill Title
+
+## Instructions
+Step-by-step guidance for Claude.
+
+## Examples
+Show concrete examples.</code></pre>
+
+                <h3>Required Fields</h3>
+                <ul>
+                    <li><code>name:</code> lowercase-with-hyphens (max 64 chars)</li>
+                    <li><code>description:</code> Brief description including when to use it (max 1024 chars)</li>
+                </ul>
+
+                <h3>Example Skills</h3>
+                <h4>Simple Button Skill</h4>
+                <pre><code>---
+name: modern-button
+description: Create trendy glassmorphism buttons. Use when user wants modern button designs.
+---
+
+# Modern Button Design
+
+## Instructions
+Create buttons with these features:
+
+1. **Glassmorphism effect**
+   - Semi-transparent background
+   - Backdrop blur filter
+   - Subtle border
+
+2. **Hover animations**
+   - Smooth scale transform
+   - Color transition
+   - Shadow elevation
+
+3. **Responsive design**
+   - Works on all screen sizes
+   - Touch-friendly on mobile
+
+## Example Code
+```css
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+}
+```</code></pre>
+
+                <h4>Hero Section Skill</h4>
+                <pre><code>---
+name: hero-section
+description: Build modern landing page hero sections with animations. Use for homepage designs.
+---
+
+# Hero Section Design
+
+## Instructions
+
+1. **Layout structure**
+   - Full viewport height
+   - Centered content
+   - Eye-catching headline
+
+2. **Visual elements**
+   - Gradient background
+   - Animated elements
+   - CTA button
+
+3. **Animations**
+   - Fade in on load
+   - Parallax effects
+   - Smooth scrolling
+
+## Best Practices
+- Keep headline under 10 words
+- Use high-contrast text
+- Single clear call-to-action
+- Mobile-first approach
+
+## Example Structure
+```html
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="animate-fade-in">Your Headline</h1>
+    <p class="animate-fade-in-delay">Supporting text</p>
+    <button class="cta-button">Get Started</button>
+  </div>
+</section>
+```</code></pre>
+            </section>
+
+            <section>
+                <h2>How Claude Uses Skills</h2>
+                <h3>Automatic Activation</h3>
+                <p>Claude reads your Skill descriptions and automatically uses them when relevant:</p>
+                <pre><code>User: "Add a modern button to my page"
+
+Claude: [Reads modern-button Skill]
+        [Applies the instructions]
+        [Creates the button]</code></pre>
+
+                <h3>Progressive Disclosure</h3>
+                <p>Claude only reads what it needs:</p>
+                <ul>
+                    <li>First checks Skill descriptions</li>
+                    <li>Loads <code>SKILL.md</code> if relevant</li>
+                    <li>Reads supporting files if referenced</li>
+                </ul>
+
+                <h3>Multi-File Skills</h3>
+                <p>You can add supporting files:</p>
+                <pre><code>.claude/skills/design-system/
+├── SKILL.md          (main instructions)
+├── colors.md         (color palette)
+├── typography.md     (font guidelines)
+└── components.md     (component library)</code></pre>
+                <p>Reference them in <code>SKILL.md</code>:</p>
+                <pre><code>For color palette, see [colors.md](colors.md).
+For typography rules, see [typography.md](typography.md).</code></pre>
+
+                <h3>Skill Tool Restrictions</h3>
+                <p>Limit which tools Claude can use with a Skill:</p>
+                <pre><code>---
+name: safe-reader
+description: Read files without making changes
+allowed-tools: Read, Grep, Glob
+---</code></pre>
+                <p>When this Skill is active, Claude can only:</p>
+                <ul>
+                    <li>Read files</li>
+                    <li>Search with Grep</li>
+                    <li>Find files with Glob</li>
+                </ul>
+                <p>No editing, writing, or bash commands.</p>
+            </section>
+
+            <section>
+                <h2>Creating Your Skills</h2>
+                <h3>Method 1: Ask Claude (Recommended for Beginners)</h3>
+                <p>Simply describe what you need in natural language. Here are 3 different prompt examples:</p>
+
+                <h4>Prompt Example 1: Simple & Direct</h4>
+                <pre><code>Create a Skill for responsive navbar designs with mobile menu.
+Save it to .claude/skills/navbar-design/</code></pre>
+
+                <h4>Prompt Example 2: Detailed with Requirements</h4>
+                <pre><code>I need a Skill for modern card components. Include:
+- Shadow effects and hover animations
+- Responsive grid layouts
+- Image optimization techniques
+- Best practices for accessibility
+
+Save it as .claude/skills/card-component/</code></pre>
+
+                <h4>Prompt Example 3: Context-Rich with Use Cases</h4>
+                <pre><code>Create a Skill that teaches how to build API integration patterns.
+This should cover:
+- Error handling strategies
+- Retry logic with exponential backoff
+- Response caching
+- Rate limiting best practices
+
+Use it when I'm connecting to third-party APIs or building API clients.
+Save to .claude/skills/api-integration/</code></pre>
+                <p>What Claude will do:</p>
+                <ul>
+                    <li>✅ Create the folder structure</li>
+                    <li>✅ Write <code>SKILL.md</code> with correct YAML format</li>
+                    <li>✅ Add detailed instructions and examples</li>
+                    <li>✅ Include best practices</li>
+                </ul>
+
+                <h3>Method 2: Manual Creation</h3>
+                <pre><code>mkdir -p .claude/skills/navbar-design
+nano .claude/skills/navbar-design/SKILL.md</code></pre>
+                <p>Then write your <code>SKILL.md</code> content.</p>
+
+                <h3>Real-World Example: Web Design Library</h3>
+                <h4>Your Skills (Design Components)</h4>
+                <pre><code>.claude/skills/
+├── modern-button/      → Button designs
+├── navbar-design/      → Navigation patterns
+├── hero-section/       → Landing page heroes
+├── footer-design/      → Footer layouts
+└── card-component/     → Card designs</code></pre>
+
+                <h4>Your Sub-agent (Uses All Skills)</h4>
+                <pre><code>---
+name: website-upgrader
+description: Complete website redesign
+---
+
+You upgrade entire websites by:
+1. Using modern-button Skill for all buttons
+2. Using navbar-design Skill for navigation
+3. Using hero-section Skill for landing page
+4. Using footer-design Skill for footer
+5. Ensuring design consistency</code></pre>
+                <p class="highlight">Skills = Your Lego pieces <br> Sub-agent = Builds the complete structure</p>
+            </section>
+
+            <section>
+                <h2>Testing Skills</h2>
+                <p>After creating a Skill, test it:</p>
+                <pre><code>"Can you create a modern button for my homepage?"</code></pre>
+                <p>Claude should:</p>
+                <ul>
+                    <li>Recognize the request matches your Skill</li>
+                    <li>Load the Skill instructions</li>
+                    <li>Apply them to create the button</li>
+                </ul>
+
+                <h2>Debugging Skills</h2>
+                <h3>Skill Not Working?</h3>
+                <p>Check description specificity:</p>
+                <pre><code>❌ Too vague:
+
+description: Helps with buttons
+✅ Specific:
+
+description: Create modern glassmorphism buttons with hover effects. Use when user wants trendy button designs.</code></pre>
+                <p>Verify file location:</p>
+                <pre><code>ls .claude/skills/your-skill/SKILL.md</code></pre>
+                <p>Check YAML syntax:</p>
+                <pre><code>cat .claude/skills/your-skill/SKILL.md | head -n 10</code></pre>
+            </section>
+
+            <section>
+                <h2>Best Practices</h2>
+                <h3>1. Keep Skills Focused</h3>
+                <p>One Skill = One capability</p>
+                <p>✅ Good:</p>
+                <ul>
+                    <li>"Modern button designs"</li>
+                    <li>"Hero section layouts"</li>
+                    <li>"Responsive navbar"</li>
+                </ul>
+                <p>❌ Too broad:</p>
+                <ul>
+                    <li>"All designs" (split into separate Skills)</li>
+                </ul>
+
+                <h3>2. Write Clear Descriptions</h3>
+                <p>Include WHAT and WHEN:</p>
+                <pre><code>description: Create responsive navigation bars with mobile menus. Use when building site navigation or updating navbar designs.</code></pre>
+
+                <h3>3. Add Examples</h3>
+                <p>Show concrete code examples in your Skills.</p>
+
+                <h3>4. Share with Team</h3>
+                <p>Commit project Skills to git:</p>
+                <pre><code>git add .claude/skills/
+git commit -m "Add design system Skills"
+git push</code></pre>
+                <p>Team members get them automatically!</p>
+            </section>
+
+            <section>
+                <h2>Skills vs Sub-agents Decision Tree</h2>
+                <pre><code>Need to do something?
+│
+├─ Single pattern/component?
+│  └─ Use SKILL
+│     Examples: button, navbar, footer
+│
+└─ Complete task/product?
+   └─ Use SUB-AGENT
+      Examples: full redesign, complex feature</code></pre>
+            </section>
+
+            <section>
+                <h2>Quick Reference</h2>
+                <h3>Create a Skill</h3>
+                <pre><code># Ask Claude (easiest)
+"Create a Skill for [what you need]"
+
+# Or manually
+mkdir -p .claude/skills/skill-name
+code .claude/skills/skill-name/SKILL.md</code></pre>
+
+                <h3>Skill Template</h3>
+                <pre><code>---
+name: your-skill-name
+description: What it does and when to use it
+---
+
+# Skill Title
+
+## Instructions
+Your step-by-step guidance
+
+## Examples
+Concrete examples</code></pre>
+
+                <h3>View Available Skills</h3>
+                <pre><code>"What Skills are available?"</code></pre>
+            </section>
+
+            <section>
+                <h2>Summary</h2>
+                <p>Skills are your reusable knowledge library:</p>
+                <ul>
+                    <li>Individual components and patterns</li>
+                    <li>Instructions Claude reads and follows</li>
+                    <li>Quick to create and use</li>
+                    <li>Build your library over time</li>
+                </ul>
+                <p>Sub-agents coordinate and use all your Skills to build complete products or features.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Claude Code. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
