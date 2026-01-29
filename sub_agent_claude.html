@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Guide: Sub-Agents in Claude Code</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+        h1 { font-size: 2.2em; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { font-size: 1.8em; color: #34495e; }
+        h3 { font-size: 1.4em; color: #3498db; }
+        h4 { font-size: 1.2em; color: #2ecc71; }
+        p { margin-bottom: 1em; }
+        ul { margin-bottom: 1em; list-style-type: disc; margin-left: 20px; }
+        ol { margin-bottom: 1em; list-style-type: decimal; margin-left: 20px; }
+        li { margin-bottom: 0.5em; }
+        strong { color: #555; }
+        code, pre {
+            font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+            background-color: #eef;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #c7254e;
+        }
+        pre {
+            display: block;
+            padding: 15px;
+            margin: 1.5em 0;
+            overflow-x: auto;
+            background-color: #2d2d2d;
+            color: #f8f8f8;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #ecf0f1;
+            margin: 1.5em 0;
+            padding: 10px 20px;
+            color: #555;
+            font-style: italic;
+        }
+        .note, .tip, .warning {
+            padding: 10px 15px;
+            border-left: 4px solid;
+            margin: 1em 0;
+            border-radius: 4px;
+        }
+        .note { border-color: #3498db; background-color: #e7f3ff; }
+        .tip { border-color: #2ecc71; background-color: #e6ffee; }
+        .warning { border-color: #e74c3c; background-color: #ffe6e6; }
+
+        .metadata {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 1em;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
+        }
+        .agent-config {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 1.5em;
+        }
+        .agent-config pre {
+            background-color: #e9ecef;
+            color: #333;
+        }
+        .checklist li {
+            list-style: none;
+            position: relative;
+            padding-left: 25px;
+        }
+        .checklist li:before {
+            content: '☐'; /* Unicode character for unchecked box */
+            position: absolute;
+            left: 0;
+            color: #7f8c8d;
+        }
+        .checklist li.checked:before {
+            content: '☑'; /* Unicode character for checked box */
+            color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="metadata">
+        December 29, 2025 | 18 min read
+    </div>
+    <h1>Complete Guide: Sub-Agents in Claude Code</h1>
+
+    <h2>What are Sub-Agents?</h2>
+    <p>Think of sub-agents as specialized team members working under Claude Code. Instead of having one AI trying to do everything, you create focused "experts" - each with their own role, knowledge, and toolset.</p>
+
+    <h3>Real-world Analogy</h3>
+    <p>Imagine managing a software project. You wouldn't ask one person to do architecture, coding, testing, AND security reviews. You'd have:</p>
+    <ul>
+        <li>An architect to plan</li>
+        <li>Developers to code</li>
+        <li>Testers to validate</li>
+        <li>Security experts to audit</li>
+    </ul>
+    <p>Sub-agents work the same way!</p>
+
+    <h3>Key Characteristics</h3>
+    <p>Each sub-agent has:</p>
+    <ul>
+        <li>Specific purpose and expertise area</li>
+        <li>Own context window (separate from main conversation)</li>
+        <li>Custom system prompt that guides behavior</li>
+        <li>Specific tools it's allowed to use</li>
+        <li>Can be configured with different AI models (Sonnet, Opus, Haiku)</li>
+    </ul>
+    <p>When Claude Code encounters a task matching a sub-agent's expertise, it delegates that task to the specialized sub-agent, which works independently and returns results.</p>
+
+    <h2>Why Use Sub-Agents?</h2>
+
+    <h3>1. Context Preservation</h3>
+    <p>Each sub-agent has its own separate context window. This means:</p>
+    <ul>
+        <li>Your main conversation stays clean and focused on high-level goals</li>
+        <li>Sub-agents don't clutter the main thread with detailed research</li>
+        <li>You can have longer, more productive sessions</li>
+        <li>No context pollution between different tasks</li>
+    </ul>
+    <p class="example"><strong>Example:</strong> When the Explore sub-agent searches your codebase, all the file contents it reads stay in its context, not your main conversation. You only see the final results!</p>
+
+    <h3>2. Specialized Expertise</h3>
+    <p>Each sub-agent can be fine-tuned for specific tasks:</p>
+    <ul>
+        <li>Custom system prompts guide their behavior</li>
+        <li>Specific tool access limits what they can do</li>
+        <li>Domain-specific knowledge embedded in prompts</li>
+        <li>Higher success rates on designated tasks</li>
+    </ul>
+    <p class="example"><strong>Example:</strong> A debugging sub-agent knows to capture stack traces, check recent changes, and test hypotheses systematically - because you trained it that way!</p>
+
+    <h3>3. Reusability & Sharing</h3>
+    <ul>
+        <li>Create once, use across all projects</li>
+        <li>Share with your team for consistent workflows</li>
+        <li>Version control them in your repository</li>
+        <li>Plugin system allows importing community agents</li>
+    </ul>
+    <p class="example"><strong>Example:</strong> Your team's "code-reviewer" agent ensures everyone follows the same review standards, automatically.</p>
+
+    <h3>4. Flexible Permissions</h3>
+    <p>Control what each sub-agent can access:</p>
+    <ul>
+        <li>Limit powerful tools to specific agents</li>
+        <li>Some agents only read, others can write</li>
+        <li>Different agents for different security levels</li>
+        <li>MCP server tools can be granted selectively</li>
+    </ul>
+    <p class="example"><strong>Example:</strong> Your "security-auditor" agent only has read access and security scanning tools - it can't accidentally modify your code.</p>
+
+    <h3>5. Performance Optimization</h3>
+    <ul>
+        <li><strong>Different models for different tasks:</strong> Use fast Haiku for searches, powerful Sonnet for complex reasoning</li>
+        <li><strong>Parallel processing:</strong> Multiple sub-agents can work on different tasks</li>
+        <li><strong>Reduced latency:</strong> Lightweight agents respond faster</li>
+        <li><strong>Cost optimization:</strong> Use cheaper models where appropriate</li>
+    </ul>
+
+    <h2>Built-in Sub-Agents</h2>
+    <p>Claude Code comes with three powerful built-in agents:</p>
+
+    <h3>1. Explore Agent</h3>
+    <p><strong>Purpose:</strong> Fast, lightweight agent optimized for searching and analyzing codebases</p>
+    <h4>Characteristics:</h4>
+    <ul>
+        <li><strong>Model:</strong> Haiku (fast, low-latency)</li>
+        <li><strong>Mode:</strong> Strictly read-only - cannot create, modify, or delete files</li>
+        <li><strong>Tools available:</strong>
+            <ul>
+                <li><code>Glob</code> - File pattern matching</li>
+                <li><code>Grep</code> - Content searching with regex</li>
+                <li><code>Read</code> - Reading file contents</li>
+                <li><code>Bash</code> - Read-only commands (ls, git status, git log, git diff, find, cat, head, tail)</li>
+            </ul>
+        </li>
+    </ul>
+    <h4>Thoroughness Levels:</h4>
+    <ul>
+        <li><code>Quick</code> - Basic searches, fastest results</li>
+        <li><code>Medium</code> - Moderate exploration, balanced</li>
+        <li><code>Very thorough</code> - Comprehensive analysis across multiple locations</li>
+    </ul>
+    <h4>When Claude uses it:</h4>
+    <ul>
+        <li>Searching or understanding codebases</li>
+        <li>Finding specific patterns or implementations</li>
+        <li>Mapping directory structures</li>
+        <li>When you don't need to make changes</li>
+    </ul>
+
+    <h3>2. General-Purpose Agent</h3>
+    <p><strong>Purpose:</strong> Capable agent for complex, multi-step tasks requiring both exploration and action</p>
+    <h4>Characteristics:</h4>
+    <ul>
+        <li><strong>Model:</strong> Sonnet (more capable reasoning)</li>
+        <li><strong>Mode:</strong> Can read AND write files</li>
+        <li><strong>Tools:</strong> Has access to all tools</li>
+        <li><strong>Purpose:</strong> Complex research, multi-step operations, code modifications</li>
+    </ul>
+    <h4>When Claude uses it:</h4>
+    <ul>
+        <li>Tasks require both exploration and modification</li>
+        <li>Complex reasoning needed to interpret results</li>
+        <li>Multiple strategies may be needed</li>
+        <li>Multi-step tasks with dependencies</li>
+    </ul>
+
+    <h3>3. Plan Agent</h3>
+    <p><strong>Purpose:</strong> Specialized agent used during plan mode for codebase research</p>
+    <h4>Characteristics:</h4>
+    <ul>
+        <li><strong>Model:</strong> Sonnet (for capable analysis)</li>
+        <li><strong>Tools:</strong> Read, Glob, Grep, Bash (for exploration)</li>
+        <li><strong>Purpose:</strong> Searches files, analyzes code structure, gathers context</li>
+        <li><strong>Automatic invocation:</strong> Used when in plan mode</li>
+    </ul>
+    <h4>How it works:</h4>
+    <p>When you're in plan mode and Claude needs to understand your codebase to create a plan, it delegates research tasks to the Plan subagent. This prevents infinite nesting of agents while still allowing Claude to gather necessary context.</p>
+    <p class="example"><strong>Example scenario:</strong></p>
+    <pre><code>User: [In plan mode] "Help me refactor the authentication module"
+
+Claude: "Let me research your authentication implementation first..."
+[Internally invokes Plan subagent to explore auth-related files]
+[Plan subagent searches codebase and returns findings]
+
+Claude: "Based on my research, here's my proposed plan..."</code></pre>
+    <div class="note"><strong>Note:</strong> The Plan subagent is only used in plan mode. In normal execution mode, Claude uses the general-purpose agent or your custom subagents.</div>
+
+    <h2>Real-World Examples</h2>
+    <p>Here are practical sub-agents you can create for various development tasks:</p>
+
+    <h3>Code Reviewer</h3>
+    <p><strong>Purpose:</strong> Ensures code quality, security, and maintainability</p>
+    <div class="agent-config">
+        <pre><code>---
+name: code-reviewer
+description: Expert code review specialist. Proactively reviews code for quality, security, and maintainability. Use immediately after writing or modifying code.
+tools: Read, Grep, Glob, Bash
+model: inherit
+---
+
+You are a senior code reviewer ensuring high standards of code quality and security.
+
+When invoked:
+1. Run git diff to see recent changes
+2. Focus on modified files
+3. Begin review immediately
+
+Review checklist:
+- Code is simple and readable
+- Functions and variables are well-named
+- No duplicated code
+- Proper error handling
+- No exposed secrets or API keys
+- Input validation implemented
+- Good test coverage
+- Performance considerations addressed
+
+Provide feedback organized by priority:
+- Critical issues (must fix)
+- Warnings (should fix)
+- Suggestions (consider improving)
+
+Include specific examples of how to fix issues.</code></pre>
+    </div>
+    <p><strong>What it does:</strong></p>
+    <ul>
+        <li>Runs <code>git diff</code> to see changes</li>
+        <li>Checks modified files for quality issues</li>
+        <li>Provides organized feedback by priority</li>
+        <li>Includes specific fix examples</li>
+    </ul>
+    <p><strong>Use case:</strong> After implementing a feature or making changes</p>
+
+    <h2>How Sub-Agents Work</h2>
+
+    <h3>Automatic Delegation</h3>
+    <p>Claude Code proactively delegates tasks based on:</p>
+    <ul>
+        <li>The task description in your request</li>
+        <li>The <code>description</code> field in subagent configurations</li>
+        <li>Current context and available tools</li>
+        <li>Matching expertise to the task at hand</li>
+    </ul>
+    <p>To encourage more proactive use, include phrases in your <code>description</code> field like:</p>
+    <ul>
+        <li>"use PROACTIVELY"</li>
+        <li>"MUST BE USED"</li>
+        <li>"Use immediately after..."</li>
+        <li>"Always invoke when..."</li>
+    </ul>
+    <p class="example"><strong>Example:</strong></p>
+    <pre><code>---
+name: security-scanner
+description: MUST BE USED whenever authentication, authorization, or security-related code is modified. Proactively scans for security vulnerabilities.
+---</code></pre>
+
+    <h3>Explicit Invocation</h3>
+    <p>You can request a specific subagent by mentioning it:</p>
+    <blockquote>
+        <p>Use the test-runner subagent to fix failing tests</p>
+        <p>Have the code-reviewer subagent look at my recent changes</p>
+        <p>Ask the debugger subagent to investigate this error</p>
+        <p>Get kevin-architect to plan the refactoring</p>
+    </blockquote>
+
+    <h3>How Claude Decides</h3>
+    <p>Claude evaluates:</p>
+    <ul>
+        <li><strong>Task requirements</strong> - What needs to be done?</li>
+        <li><strong>Available subagents</strong> - Which agents match?</li>
+        <li><strong>Agent descriptions</strong> - Which is most appropriate?</li>
+        <li><strong>Tool requirements</strong> - Does the agent have needed tools?</li>
+        <li><strong>Context needs</strong> - Does it benefit from a clean context?</li>
+    </ul>
+
+    <h2>Creating Sub-Agents</h2>
+
+    <h3>Method 1: Interactive Command (Recommended)</h3>
+    <p>The easiest and most powerful way to create subagents:</p>
+    <h4>Recommended workflow:</h4>
+    <ol>
+        <li>Run <code>/agents</code></li>
+        <li>Select "Create New Agent"</li>
+        <li>Choose project-level or user-level</li>
+        <li>Describe your subagent to Claude - let it generate the initial version</li>
+        <li>Customize the generated agent to make it yours</li>
+        <li>Select tools from the comprehensive list</li>
+        <li>Save and start using!</li>
+    </ol>
+    <h4>Why this is best:</h4>
+    <ul>
+        <li>Claude generates a solid foundation</li>
+        <li>Interactive tool selection is easy</li>
+        <li>You get immediate feedback</li>
+        <li>Can edit in your preferred editor (press <code>e</code>)</li>
+    </ul>
+
+    <h3>Method 2: Manual Files</h3>
+    <p>Create subagent files directly in the filesystem:</p>
+    <h4>Project-level subagents (available in current project only):</h4>
+    <p><code>.claude/agents/your-agent.md</code></p>
+    <h4>User-level subagents (available across all projects):</h4>
+    <p><code>~/.claude/agents/your-agent.md</code></p>
+    <h4>Priority order when names conflict:</h4>
+    <ul>
+        <li>Project subagents (highest priority)</li>
+        <li>CLI-defined subagents</li>
+        <li>User subagents (lowest priority)</li>
+    </ul>
+    <h4>Creating manually:</h4>
+    <pre><code># Create project subagent directory
+mkdir -p .claude/agents
+
+# Create the subagent file
+cat > .claude/agents/test-runner.md << 'EOF'
+---
+name: test-runner
+description: Use proactively to run tests and fix failures
+tools: Read, Write, Bash
+model: sonnet
+---
+
+You are a test automation expert. When you see code changes,
+proactively run the appropriate tests. If tests fail, analyze
+the failures and fix them while preserving the original test intent.
+EOF</code></pre>
+    <div class="note"><strong>Note:</strong> Manually created subagents are loaded on next Claude Code session start. To use immediately, create via <code>/agents</code> command instead.</div>
+
+    <h3>Method 3: CLI-Based Configuration</h3>
+    <p>Define subagents dynamically using the <code>--agents</code> CLI flag:</p>
+    <pre><code>claude --agents '{
+  "code-reviewer": {
+    "description": "Expert code reviewer. Use proactively after code changes.",
+    "prompt": "You are a senior code reviewer. Focus on code quality, security, and best practices.",
+    "tools": ["Read", "Grep", "Glob", "Bash"],
+    "model": "sonnet"
+  }
+}'</code></pre>
+    <h4>When to use CLI method:</h4>
+    <ul>
+        <li>✅ Quick testing of subagent configurations</li>
+        <li>✅ Session-specific subagents (don't need to be saved)</li>
+        <li>✅ Automation scripts with custom subagents</li>
+        <li>✅ Sharing subagent definitions in documentation</li>
+    </ul>
+    <div class="tip"><strong>Priority:</strong> CLI-defined subagents have higher priority than user-level but lower priority than project-level.</div>
+
+    <h2>File Format</h2>
+    <p>Each subagent is defined in a Markdown file with YAML frontmatter:</p>
+    <pre><code>---
+name: your-sub-agent-name
+description: Description of when this subagent should be invoked
+tools: tool1, tool2, tool3  # Optional - inherits all tools if omitted
+model: sonnet  # Optional - specify model alias or 'inherit'
+permissionMode: default  # Optional - permission mode
+skills: skill1, skill2  # Optional - skills to auto-load
+---
+
+Your subagent's system prompt goes here. This can be multiple paragraphs
+and should clearly define the subagent's role, capabilities, and approach
+to solving problems.
+
+Include specific instructions, best practices, and any constraints
+the subagent should follow.</code></pre>
+
+    <h3>Configuration Fields</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>name</code></td>
+                <td>✅ Yes</td>
+                <td>Unique identifier (lowercase letters and hyphens)</td>
+            </tr>
+            <tr>
+                <td><code>description</code></td>
+                <td>✅ Yes</td>
+                <td>Natural language description of purpose (this is what Claude reads to decide when to use it!)</td>
+            </tr>
+            <tr>
+                <td><code>tools</code></td>
+                <td>❌ No</td>
+                <td>Comma-separated list. If omitted, inherits all tools from main thread</td>
+            </tr>
+            <tr>
+                <td><code>model</code></td>
+                <td>❌ No</td>
+                <td>Model alias (sonnet, opus, haiku) or 'inherit'. Default: configured subagent model</td>
+            </tr>
+            <tr>
+                <td><code>permissionMode</code></td>
+                <td>❌ No</td>
+                <td>Permission handling: default, acceptEdits, bypassPermissions, plan, ignore</td>
+            </tr>
+            <tr>
+                <td><code>skills</code></td>
+                <td>❌ No</td>
+                <td>Comma-separated skill names to auto-load</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Model Selection</h3>
+    <p>The <code>model</code> field controls which AI model the subagent uses:</p>
+    <ul>
+        <li><code>sonnet</code> - Most capable, balanced (default for subagents)</li>
+        <li><code>opus</code> - Most powerful, for complex reasoning</li>
+        <li><code>haiku</code> - Fastest, most cost-effective</li>
+        <li><code>'inherit'</code> - Use same model as main conversation</li>
+    </ul>
+    <p class="example"><strong>Example use cases:</strong></p>
+    <pre><code>model: haiku     # Fast search agent
+model: sonnet    # Code review agent
+model: opus      # Complex architecture planning
+model: 'inherit' # Match main conversation's capabilities</code></pre>
+
+    <h3>Available Tools</h3>
+    <p>Subagents can access any of Claude Code's internal tools. Tool configuration options:</p>
+    <ul>
+        <li><strong>Omit <code>tools</code> field (recommended)</strong> - Inherits all tools from main thread, including:
+            <ul>
+                <li>Built-in tools (Read, Write, Edit, Bash, Grep, Glob, etc.)</li>
+                <li>Connected MCP server tools</li>
+            </ul>
+        </li>
+        <li><strong>Specify individual tools</strong> - For granular control:</li>
+    </ul>
+    <pre><code>tools: Read, Grep, Glob, Bash</code></pre>
+    <p><strong>Common tools:</strong></p>
+    <ul>
+        <li><code>Read</code> - Read file contents</li>
+        <li><code>Write</code> - Create new files</li>
+        <li><code>Edit</code> - Modify existing files</li>
+        <li><code>Bash</code> - Execute shell commands</li>
+        <li><code>Grep</code> - Search file contents with regex</li>
+        <li><code>Glob</code> - Find files matching patterns</li>
+        <li><code>Git</code> - Git operations</li>
+    </ul>
+    <p><strong>MCP Tools:</strong> When connected to MCP servers (like Supabase, GitHub, Slack), subagents can access these tools too!</p>
+    <div class="tip"><strong>Tip:</strong> Use <code>/agents</code> command to see and select from all available tools in an interactive interface.</div>
+
+    <h2>Best Practices</h2>
+
+    <h3>1. Start with Claude-Generated Agents</h3>
+    <p>Highly recommended: Generate your initial subagent with Claude, then iterate:</p>
+    <pre><code>/agents → Create New Agent → Describe to Claude → Customize</code></pre>
+    <h4>Why this works best:</h4>
+    <ul>
+        <li>Claude creates a solid foundation</li>
+        <li>You get best practices built-in</li>
+        <li>Saves time and prevents common mistakes</li>
+        <li>You customize to your specific needs</li>
+    </ul>
+
+    <h3>2. Design Focused Subagents</h3>
+    <p>Create subagents with single, clear responsibilities:</p>
+    <p>✅ <strong>Good:</strong></p>
+    <ul>
+        <li><code>code-reviewer</code> - Reviews code quality</li>
+        <li><code>test-runner</code> - Runs and fixes tests</li>
+        <li><code>security-scanner</code> - Finds security issues</li>
+    </ul>
+    <p>❌ <strong>Bad:</strong></p>
+    <ul>
+        <li><code>do-everything</code> - Reviews, tests, deploys, documents...</li>
+    </ul>
+    <p><strong>Why:</strong> Focused agents are more predictable, performant, and maintainable.</p>
+
+    <h3>3. Write Detailed Prompts</h3>
+    <p>Include specific instructions, examples, and constraints:</p>
+    <div class="agent-config">
+        <pre><code>---
+name: api-documenter
+---
+
+You are an API documentation expert.
+
+When invoked:
+1. Analyze the API endpoint code
+2. Generate OpenAPI/Swagger documentation
+3. Include request/response examples
+4. Document error responses
+5. Add usage notes
+
+Format: Use OpenAPI 3.0 specification
+Style: Clear, concise, developer-friendly
+Examples: Include curl commands and response samples</code></pre>
+    </div>
+    <p>The more guidance you provide, the better the subagent performs.</p>
+
+    <h3>4. Limit Tool Access</h3>
+    <p>Only grant tools necessary for the subagent's purpose:</p>
+    <pre><code># Security auditor - read-only
+tools: Read, Grep, Glob, Bash
+
+# Code modifier - can edit
+tools: Read, Write, Edit, Bash
+
+# Test runner - needs execution
+tools: Read, Write, Bash</code></pre>
+    <p><strong>Benefits:</strong></p>
+    <ul>
+        <li>Improves security</li>
+        <li>Helps agent focus</li>
+        <li>Prevents accidental modifications</li>
+        <li>Clearer agent capabilities</li>
+    </ul>
+
+    <h3>5. Version Control Project Agents</h3>
+    <p>Check project subagents into Git:</p>
+    <pre><code>git add .claude/agents/
+git commit -m "Add custom subagents for team"</code></pre>
+    <p><strong>Benefits:</strong></p>
+    <ul>
+        <li>Team collaboration</li>
+        <li>Shared best practices</li>
+        <li>Version history</li>
+        <li>Consistent workflows across team</li>
+    </ul>
+
+    <h3>6. Use Descriptive Names</h3>
+    <p>Follow naming conventions:</p>
+    <p>✅ <strong>Good:</strong> <code>test-runner</code>, <code>code-reviewer</code>, <code>api-documenter</code><br>❌ <strong>Bad:</strong> <code>agent1</code>, <code>helper</code>, <code>tool</code></p>
+    <p><strong>Format:</strong> lowercase with hyphens, descriptive of purpose</p>
+
+    <h3>7. Test Incrementally</h3>
+    <p>When creating new subagents:</p>
+    <ul>
+        <li>Start with simple tasks</li>
+        <li>Test with explicit invocation</li>
+        <li>Refine the prompt based on results</li>
+        <li>Add to automatic delegation</li>
+        <li>Monitor performance</li>
+    </ul>
+
+    <h3>8. Document Agent Purpose</h3>
+    <p>Add comments to your agent files:</p>
+    <div class="agent-config">
+        <pre><code>---
+name: deployment-manager
+description: Handles deployment to staging and production. Use when deploying or managing environments.
+# Created: 2025-01-15
+# Owner: DevOps Team
+# Last Updated: 2025-01-20
+---
+
+&lt;!--
+This agent manages deployments and environment configurations.
+It has access to deployment scripts and environment files.
+Always runs pre-deployment checks before deploying.
+--&gt;
+
+Your system prompt here...</code></pre>
+    </div>
+
+    <h2>Advanced Features</h2>
+
+    <h3>Chaining Sub-Agents</h3>
+    <p>For complex workflows, chain multiple subagents:</p>
+    <blockquote>
+        <p>First use the code-analyzer subagent to find performance issues,<br>  then use the optimizer subagent to fix them</p>
+        <p>Have the security-scanner check the code,<br>  then use code-reviewer for quality,<br>  and finally test-runner to verify</p>
+    </blockquote>
+    <h4>How it works:</h4>
+    <ul>
+        <li>Claude invokes first subagent</li>
+        <li>First subagent completes and returns results</li>
+        <li>Claude processes results</li>
+        <li>Claude invokes second subagent with context</li>
+        <li>Process continues...</li>
+    </ul>
+    <p><strong>Use case:</strong> Multi-stage workflows like security → review → test → deploy</p>
+
+    <h3>Dynamic Sub-Agent Selection</h3>
+    <p>Claude intelligently selects subagents based on context:</p>
+    <h4>What influences selection:</h4>
+    <ul>
+        <li>Keywords in your request</li>
+        <li>Current file context</li>
+        <li>Recent changes (git diff)</li>
+        <li>Project type</li>
+        <li>Previous subagent usage</li>
+    </ul>
+    <p>Make descriptions action-oriented:</p>
+    <pre><code># Good - Clear when to use
+description: Use proactively after any authentication code changes to scan for security vulnerabilities
+
+# Better - Even more specific
+description: MUST BE USED when modifying files in src/auth/. Scans for OAuth vulnerabilities, token leaks, and authentication bypasses.</code></pre>
+
+    <h3>Resumable Sub-Agents</h3>
+    <p>Continue previous conversations for long-running tasks:</p>
+    <h4>How it works:</h4>
+    <ul>
+        <li>Each subagent execution gets a unique <code>agentId</code></li>
+        <li>Conversation stored in: <code>agent-{agentId}.jsonl</code></li>
+        <li>Resume by providing the <code>agentId</code></li>
+        <li>Agent continues with full context</li>
+    </ul>
+    <h4>Example Workflow:</h4>
+    <p><strong>Initial invocation:</strong></p>
+    <blockquote>
+        <p>Use the code-analyzer agent to start reviewing the authentication module</p>
+        <p>[Agent completes initial analysis]<br>Agent ID: abc123</p>
+    </blockquote>
+    <div class="tip"><strong>Tip:</strong> Claude Code displays the agent ID when a subagent completes its work - save it!</div>
+
+    <h2>Docusaurus Project Sub-Agents</h2>
+    <p>Here are 3 specialized sub-agents for your Docusaurus project using AI/Spec-Driven Development:</p>
+
+    <h3>1. Documentation Writer Agent</h3>
+    <div class="agent-config">
+        <pre><code>---
+name: docs-writer
+description: Creates and updates Docusaurus documentation. Use when writing new docs, creating tutorials, or updating existing documentation.
+tools: Read, Write, Edit, Glob, Grep
+model: sonnet
+---
+
+You are an expert technical writer specializing in Docusaurus documentation.
+
+## Your Role
+
+Create clear, comprehensive, and user-friendly documentation for developers.
+
+## When Invoked
+
+1. **Understand the topic**: Read related code, specs, or requirements
+2. **Research existing docs**: Check for related documentation
+3. **Plan structure**: Organize information logically
+4. **Write content**: Create clear, concise documentation
+5. **Add examples**: Include code samples and use cases
+6. **Review and refine**: Ensure clarity and accuracy
+
+## Documentation Standards
+
+### Structure
+- Clear page titles and descriptions
+- Logical information hierarchy
+- Table of contents for long pages
+- Proper frontmatter metadata
+
+### Writing Style
+- **Active voice**: "Click the button" not "The button should be clicked"
+- **Present tense**: "The system returns" not "The system will return"
+- **Second person**: "You can configure" not "One can configure"
+- **Short sentences**: Break complex ideas into digestible chunks
+- **Concrete examples**: Show, don't just tell
+
+### Markdown/MDX Best Practices
+- Use proper heading hierarchy (h1 → h2 → h3)
+- Include code blocks with language specification
+- Add admonitions for tips, warnings, notes
+- Use tables for structured data
+- Include images with alt text
+- Create internal links to related content
+
+### Code Examples
+- Include complete, runnable examples
+- Add comments explaining key concepts
+- Show both simple and advanced usage
+- Include error handling examples
+- Provide copy-paste ready code
+
+## File Organization
+
+Follow Docusaurus conventions:
+- `/docs/` - Main documentation
+- `/blog/` - Blog posts
+- `/src/pages/` - Custom pages
+- `/static/` - Static assets</code></pre>
+    </div>
+
+    <h3>2. Frontmatter Template</h3>
+    <div class="agent-config">
+        <pre><code>---
+id: unique-id
+title: Page Title
+sidebar_label: Short Label
+sidebar_position: 1
+description: Meta description for SEO
+keywords: [keyword1, keyword2]
+---
+
+
+## Content Types You Create
+
+### Tutorials
+- Step-by-step instructions
+- Progressive difficulty
+- Clear learning objectives
+- Practice exercises
+
+### API Reference
+- Endpoint documentation
+- Parameter descriptions
+- Request/response examples
+- Error codes
+
+### Guides
+- Conceptual explanations
+- Best practices
+- Common patterns
+- Troubleshooting
+
+### Changelogs
+- Version information
+- New features
+- Breaking changes
+- Deprecations
+
+Always ensure documentation is accurate, up-to-date, and helpful to your target audience.</code></pre>
+    </div>
+
+    <h3>3. Content Reviewer Agent</h3>
+    <div class="agent-config">
+        <pre><code>---
+name: content-reviewer
+description: Reviews Docusaurus documentation for clarity, accuracy, and consistency. Use after writing or updating documentation to ensure quality.
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---
+
+You are a meticulous content reviewer specializing in technical documentation quality.
+
+## Your Mission
+
+Ensure all documentation is clear, accurate, consistent, and follows best practices.
+
+## Review Process
+
+When invoked:
+
+1. **Read the content**: Analyze new or updated documentation
+2. **Check structure**: Verify proper organization and hierarchy
+3. **Verify accuracy**: Ensure technical correctness
+4. **Test examples**: Validate code samples work
+5. **Check links**: Find broken internal/external links
+6. **Review consistency**: Check style and terminology
+7. **Assess readability**: Evaluate clarity and flow
+8. **Report findings**: Provide organized feedback
+
+## Review Checklist
+
+### Content Quality
+- [ ] Clear and concise writing
+- [ ] Proper grammar and spelling
+- [ ] Consistent terminology
+- [ ] Active voice used
+- [ ] Appropriate audience level
+
+### Technical Accuracy
+- [ ] Code examples work correctly
+- [ ] API references are accurate
+- [ ] Version numbers are current
+- [ ] Deprecated features marke</code></pre>
+    </div>
+
+    <h2>How to Create Your Own Sub-Agent in Claude Code</h2>
+    <h3>Example Sub-Agent: UI Upgrading Agent</h3>
+    <p><strong>What This Agent Does</strong></p>
+    <p>This agent helps when:</p>
+    <ul>
+        <li>You want to improve UI/UX</li>
+        <li>Upgrade design, layout, spacing, colors</li>
+        <li>Make UI modern, clean, and responsive</li>
+    </ul>
+    <p>We describe the role, responsibility, tools, and behavior in natural language, and Claude Code converts it into a sub-agent automatically.</p>
+
+    <h3>PROMPT 1: Docusaurus UI Upgrading Agent</h3>
+    <p>Specifically for upgrading UI in Docusaurus-based documentation websites.</p>
+    <p>The agent should specialize in:</p>
+    <ul>
+        <li>Improving the UI and UX of Docusaurus sites</li>
+        <li>Improving navbar, sidebar, footer, and docs pages UI</li>
+        <li>Ensuring responsiveness for mobile, tablet, and desktop</li>
+    </ul>
+    <p>The agent must understand:</p>
+    <ul>
+        <li>Docusaurus theme structure</li>
+        <li>Docs, blog, and custom pages</li>
+        <li>Markdown and MDX styling</li>
+    </ul>
+    <p>Use this agent when:</p>
+    <ul>
+        <li>Redesigning or upgrading a Docusaurus site UI</li>
+        <li>Making docs look modern without breaking structure</li>
+    </ul>
+
+    <h3>PROMPT 2: Performance Optimization Agent</h3>
+    <p>Focused on performance optimization.</p>
+    <p>This agent should analyze web application code and improve performance without changing features.</p>
+    <p>Responsibilities:</p>
+    <ul>
+        <li>Detect performance bottlenecks</li>
+        <li>Optimize rendering and component structure</li>
+        <li>Reduce unnecessary computations</li>
+        <li>Improve asset loading and bundle size</li>
+        <li>Suggest best practices clearly</li>
+    </ul>
+    <p>Use this agent when the app feels slow or inefficient.</p>
+
+    <h3>Documentation Review & Improvement Agent</h3>
+    <p>Reviewing and improving technical documentation.</p>
+    <p>The agent should:</p>
+    <ul>
+        <li>Review documentation for clarity, accuracy, and consistency</li>
+        <li>Fix grammar and readability issues</li>
+        <li>Verify technical correctness</li>
+        <li>Ensure consistent content</li>
+    </ul>
+</body>
+</html>

@@ -1,4 +1,6 @@
 I want to create a sub-agent focused on the topic: ``` Auth Agent, responsible for handling secure user authentication flows. ```
+
+
 Generate an agent prompt based on the reference agent-creation prompt I provided.
 
 Ensure that the agent explicitly uses the following skills: ``` Auth Skill and Validation Skill. ```
